@@ -1,28 +1,40 @@
 const shows = [
   {
-    venue: "Tipps Bar",
-    format: "Solo Acoustic",
-    date: "April 26th, 2026",
-    time: "6:00 PM",
-    location: "3614 Mitchell Ave, Saint Joseph, MO",
-    link: null
-  },
-  {
     venue: "Magoon's Delicatessen",
     format: "TriLemma Open Jam",
-    date: "April 29th, 2026",
-    time: "7:00 PM",
+    date: "April 29th, 2026, 7:00 PM",
     location: "602 S 8th St, Saint Joseph, MO",
     link: null
   },
   {
     venue: "Frog Hop Ballroom",
     format: "TriLemma",
-    date: "May 29th, 2026",
-    time: "7:00 PM",
+    date: "May 29th, 2026, 7:00 PM",
     location: "3406 Frederick Ave #2913, Saint Joseph, MO",
     link: "https://app.donorview.com/Event/EventInfo?prm=akNYJu1ddvImcOypDi4M6zG4pAOJFY1GSbVqIeP7kYXrceGwrQ8Rak3Cy_t8fsQRxga5q3xC27aasdAKJ6WCj8W1cWsDTYWTaDC4vLaLeVJiO6wZTX-oczS8szxGu8Sve9Y3ABadg-6Ls8O1lHRHE1xRu08WqfJtZxBo198MjrzVKccs3_URReBdWdpJFX1PbDLfmbwzJ7iiYYS9ghHA7hXufAEMfEUi5HAQhg1bSEFaCykqqC7qZibG-kffosE60"
   },
+  {
+    "venue": "Amelia Earhart Festival",
+    "format": "TriLemma as Moonshot!",
+    "date": "July 18th, 2026, 7:00 PM",
+    "location": "Riverfront Park, Atchison, KS",
+    "link": "https://www.visitatchison.com/aefestival"
+  },
+  {
+    "venue": "Moila Golf Course Family Fun Night!",
+    "format": "TriLemma",
+    "date": "July 25th, 2026, 6:00 PM",
+    "location": "701 N Noyes Blvd, St Joseph, MO",
+    "link": null
+  },
+   {
+    "venue": "Jakes Steakhouse",
+    "format": "TriLemma",
+    "date": "July 31st, 2026, 7:00 PM",
+    "location": "620 Edmond St, St Joseph, MO",
+    "link": null
+  } 
+
 ];
 
 // Find the container in HTML where show cards should go
@@ -32,10 +44,11 @@ function createMetaRow(label, value) {
   const row = document.createElement("p");
   row.className = "show-meta";
 
-  const strong = document.createElement("strong");
-  strong.textContent = `${label}: `;
-
-  row.appendChild(strong);
+  if (label) {
+    const strong = document.createElement("strong");
+    strong.textContent = `${label}: `;
+    row.appendChild(strong);
+  }
   row.append(value);
 
   return row;
@@ -45,7 +58,6 @@ function createShowCard(show) {
   const venue = show.venue || "Venue TBA";
   const format = show.format || "Format TBA";
   const date = show.date || "Date TBA";
-  const time = show.time || "Time TBA";
   const location = show.location || "Location TBA";
 
   const card = document.createElement("article");
@@ -55,10 +67,9 @@ function createShowCard(show) {
   title.textContent = venue;
   card.appendChild(title);
 
-  card.appendChild(createMetaRow("Format", format));
-  card.appendChild(createMetaRow("Date", date));
-  card.appendChild(createMetaRow("Time", time));
-  card.appendChild(createMetaRow("Location", location));
+  card.appendChild(createMetaRow(null, date));
+  card.appendChild(createMetaRow(null, location));
+  card.appendChild(createMetaRow("Notes", format));
 
   if (show.link) {
     const linkRow = document.createElement("p");
