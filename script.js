@@ -27,7 +27,7 @@ const shows = [
     "location": "701 N Noyes Blvd, St Joseph, MO",
     "link": null
   },
-   {
+  {
     "venue": "Jakes Steakhouse",
     "format": "TriLemma",
     "date": "July 31st, 2026, 7:00 PM",
