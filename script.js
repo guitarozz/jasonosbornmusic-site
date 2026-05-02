@@ -1,41 +1,17 @@
-const shows = [
-  {
-    venue: "Magoon's Delicatessen",
-    format: "TriLemma Open Jam",
-    date: "April 29th, 2026, 7:00 PM",
-    location: "602 S 8th St, Saint Joseph, MO",
-    link: null
-  },
-  {
-    venue: "Frog Hop Ballroom",
-    format: "TriLemma",
-    date: "May 29th, 2026, 7:00 PM",
-    location: "3406 Frederick Ave #2913, Saint Joseph, MO",
-    link: "https://app.donorview.com/Event/EventInfo?prm=akNYJu1ddvImcOypDi4M6zG4pAOJFY1GSbVqIeP7kYXrceGwrQ8Rak3Cy_t8fsQRxga5q3xC27aasdAKJ6WCj8W1cWsDTYWTaDC4vLaLeVJiO6wZTX-oczS8szxGu8Sve9Y3ABadg-6Ls8O1lHRHE1xRu08WqfJtZxBo198MjrzVKccs3_URReBdWdpJFX1PbDLfmbwzJ7iiYYS9ghHA7hXufAEMfEUi5HAQhg1bSEFaCykqqC7qZibG-kffosE60"
-  },
-  {
-    "venue": "Amelia Earhart Festival",
-    "format": "TriLemma as Moonshot!",
-    "date": "July 18th, 2026, 7:00 PM",
-    "location": "Riverfront Park, Atchison, KS",
-    "link": "https://www.visitatchison.com/aefestival"
-  },
-  {
-    "venue": "Moila Golf Course Family Fun Night!",
-    "format": "TriLemma",
-    "date": "July 25th, 2026, 6:00 PM",
-    "location": "701 N Noyes Blvd, St Joseph, MO",
-    "link": null
-  },
-  {
-    "venue": "Jakes Steakhouse",
-    "format": "TriLemma",
-    "date": "July 31st, 2026, 7:00 PM",
-    "location": "620 Edmond St, St Joseph, MO",
-    "link": null
-  } 
+async function loadShows() {
+  try {
+    const response = await fetch("shows.json", { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Failed to load shows: ${response.status}`);
+    }
 
-];
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Unable to load shows data.", error);
+    return [];
+  }
+}
 
 // Find the container in HTML where show cards should go
 const showListElement = document.getElementById("show-list");
@@ -88,12 +64,17 @@ function createShowCard(show) {
   return card;
 }
 
-// Render each show as a card
-if (showListElement) {
+async function renderShows() {
+  if (!showListElement) return;
+
+  const shows = await loadShows();
   const fragment = document.createDocumentFragment();
+
   shows.forEach((show) => fragment.appendChild(createShowCard(show)));
   showListElement.appendChild(fragment);
 }
+
+renderShows();
 
 // Set footer year automatically
 const yearElement = document.getElementById("year");
