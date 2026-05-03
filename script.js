@@ -76,6 +76,113 @@ async function renderShows() {
 
 renderShows();
 
+const bookingModal = document.getElementById("booking-modal");
+const bookMeButton = document.getElementById("book-me-btn");
+const bookingForm = document.getElementById("booking-form");
+const bookingStatus = document.getElementById("booking-form-status");
+const bookingSubmitButton = document.getElementById("booking-submit-btn");
+
+let previousActiveElement = null;
+
+function setBookingStatus(message, type = "") {
+  if (!bookingStatus) return;
+
+  bookingStatus.textContent = message;
+  bookingStatus.classList.remove("success", "error");
+  if (type) {
+    bookingStatus.classList.add(type);
+  }
+}
+
+function openBookingModal() {
+  if (!bookingModal) return;
+
+  previousActiveElement = document.activeElement;
+  bookingModal.classList.add("is-open");
+  bookingModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  setBookingStatus("");
+
+  const firstField = bookingModal.querySelector("#booking-name");
+  if (firstField) {
+    firstField.focus();
+  }
+}
+
+function closeBookingModal() {
+  if (!bookingModal) return;
+
+  bookingModal.classList.remove("is-open");
+  bookingModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+
+  if (previousActiveElement && typeof previousActiveElement.focus === "function") {
+    previousActiveElement.focus();
+  }
+}
+
+if (bookMeButton) {
+  bookMeButton.addEventListener("click", openBookingModal);
+}
+
+if (bookingModal) {
+  bookingModal.addEventListener("click", (event) => {
+    const closeTrigger = event.target.closest("[data-modal-close]");
+    if (closeTrigger) {
+      closeBookingModal();
+    }
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && bookingModal && bookingModal.classList.contains("is-open")) {
+    closeBookingModal();
+  }
+});
+
+if (bookingForm) {
+  bookingForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!bookingSubmitButton) return;
+
+    bookingSubmitButton.disabled = true;
+    bookingSubmitButton.textContent = "Sending...";
+    setBookingStatus("Sending your request...");
+
+    try {
+      const formData = new FormData(bookingForm);
+      const response = await fetch(bookingForm.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Booking form request failed: ${response.status}`);
+      }
+
+      setBookingStatus("Thanks! Your booking request was sent successfully.", "success");
+      bookingForm.reset();
+
+      setTimeout(() => {
+        closeBookingModal();
+      }, 1200);
+    } catch (error) {
+      console.error("Unable to send booking request.", error);
+      setBookingStatus(
+        "Sorry, there was a problem sending your request. Please try again, or email me directly at josborn777@gmail.com.",
+        "error"
+      );
+    } finally {
+      bookingSubmitButton.disabled = false;
+      bookingSubmitButton.textContent = "Send Request";
+    }
+  });
+}
+
 // Set footer year automatically
 const yearElement = document.getElementById("year");
 if (yearElement) {
